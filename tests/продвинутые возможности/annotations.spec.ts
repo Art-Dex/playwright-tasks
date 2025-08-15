@@ -1,5 +1,9 @@
 import { test, expect } from '@playwright/test';
 
+test.beforeEach(async ({ page }) => {
+  await page.goto('https://osstep.github.io/annotations');
+});
+
 test.describe('Раздел с аннотациями', () => {
   // 1. slow - увеличивает таймаут для медленных тестов. Добавь аннотацию slow для медленного тесты
   test('Медленная загрузка раздела', async ({ page }) => {
@@ -8,43 +12,35 @@ test.describe('Раздел с аннотациями', () => {
     // 1. Перейти на страницу
     // 2. Дождаться появления медленного раздела
     // 3. Проверить его видимость
-
-    await page.goto('https://osstep.github.io/annotations');
     const slowSection = page.locator('#slow-section');
     await slowSection.waitFor({ state: 'visible' });
     await expect(slowSection).toBeVisible();
   });
 
   // 2. skip - пропуск теста с указанием причины. Используй аннотацию skip для пропуска теста
-  test('Форма оплаты (еще не реализована)', async ({ page }) => {
+  test.skip('Форма оплаты (еще не реализована)', async ({ page }) => {
     // Задание: Пропустить тест для нереализованной функциональности
     // Аннотация: skip (пропустить тест с комментарием)
     // 1. Проверить что кнопка оплаты заблокирована
-
-    await page.goto('https://osstep.github.io/annotations');
     await expect(page.getByRole('button', { name: 'Оплатить' })).toBeDisabled();
   });
 
   // 3. fixme - пометить временно падающий тест. Используй аннотацию fixme чтобы пометить нестабильный тест
-  test('Нестабильная функция', async ({ page }) => {
+  test.fixme('Нестабильная функция', async ({ page }) => {
     // Задание: Временно пометить падающий тест
     // Аннотация: fixme (известная проблема, тест падает)
     // 1. Нажать на нестабильную кнопку
     // 2. Проверить результат (может упасть)
-
-    await page.goto('https://osstep.github.io/annotations');
     await page.getByRole('button', { name: 'Активировать' }).click();
     await expect(page.locator('#unstable-result')).toBeVisible();
   });
 
   // 4. only - запустить только этот тест. Используй аннотацию only чтобы запустить только этот тест
-  test('Новая функция в разработке', async ({ page }) => {
+  test.only('Новая функция в разработке', async ({ page }) => {
     // Задание: Тестирование новой функциональности
     // Аннотация: only (запустить только этот тест)
     // 1. Нажать на кнопку новой функции
     // 2. Проверить alert
-
-    await page.goto('https://osstep.github.io/annotations');
 
     page.on('dialog', async (dialog) => {
       expect(dialog.message()).toBe('Функция в разработке!');
@@ -55,13 +51,11 @@ test.describe('Раздел с аннотациями', () => {
   });
 
   // 5. fail - ожидаемо падающий тест. Этот тест падает, пометь его как падающий с помощью аннотации fail
-  test('Тест с ожидаемым падением', async ({ page }) => {
+  test.fail('Тест с ожидаемым падением', async ({ page }) => {
     // Задание: Проверить ожидаемо падающий сценарий
     // Аннотация: fail (тест должен упасть)
     // 1. Проверить несуществующий элемент
-
-    await page.goto('https://osstep.github.io/annotations');
-    await expect(page.locator('#non-existent-element')).toBeVisible();
+    await expect(page.locator('#non-existent-elemen')).toBeVisible();
   });
 });
 
