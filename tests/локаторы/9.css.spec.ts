@@ -19,8 +19,8 @@ test.describe('Продвинутые CSS-селекторы', () => {
     //    - Является прямой дочерней элементом формы
     //    - Имеет класс btn и submit-btn
     //    - Не disabled
-    const submitButton = // твой код
-      await expect(submitButton).toBeEnabled();
+    const submitButton = page.locator('form .btn.submit-btn:not(.disabled)');
+    await expect(submitButton).toBeEnabled();
   });
 });
 
@@ -34,27 +34,33 @@ test.describe('Динамический контент с условиями', (
     //    - Имеет класс disabled
     //    - Содержит текст "Недоступно"
     //    - Не имеет атрибута type="submit"
-    const dynamicButton = // твой код
-      await expect(dynamicButton).toBeVisible({ timeout: 2000 });
+    const dynamicButton = page.locator('.disabled:has-text("Недоступно"):not([type="submit"])');
+    await expect(dynamicButton).toBeVisible({ timeout: 2000 });
 
     // 2. Найти динамический товар, который:
     //    - Цена меньше 10 000 ₽
     //    - Не является рекомендуемым (featured)
-    const cheapProduct = // твой код
-      await expect(cheapProduct).toHaveText('9 999');
+    const cheapProduct = page.locator(
+      '#dynamic-content .product-card:not(featured) .price-value:has-text("9 999")',
+    );
+    await expect(cheapProduct).toHaveText('9 999');
   });
 
   test('Комбинации с :has и :not', async ({ page }) => {
     // 1. Найти все карточки, которые:
     //    - Не имеют статуса sold-out
     //    - Содержат кнопку с текстом "В корзину"
-    const availableProducts = // твой код
-      await expect(availableProducts).toHaveCount(2);
+    const availableProducts = page.locator(
+      '.product-card:not(sold-out) .btn:has-text("В корзину")',
+    );
+    await expect(availableProducts).toHaveCount(2);
 
     // 2. Найти ячейки таблицы, которые:
     //    - В строках с активными пользователями
     //    - Не являются ячейками с email
-    const activeUserCells = // твой код
-      await expect(activeUserCells).toHaveCount(3); // ID, Имя, Статус
+    const activeUserCells = page.locator(
+      '#user-table tr:has(.status-active) td:not(:nth-child(3))',
+    );
+    await expect(activeUserCells).toHaveCount(3); // ID, Имя, Статус
   });
 });
