@@ -79,6 +79,8 @@ const elements: Array<Elements> = [
   },
 ];
 
+const lightMods: string[] = ['light', 'dark'];
+
 test.describe('Тесты главной страницы', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('https://playwright.dev/');
@@ -136,5 +138,14 @@ test.describe('Тесты главной страницы', () => {
       .toHaveAttribute('href', '/docs/intro');
     await page.getByRole('link', { name: 'Get started' }).click();
     await expect.soft(page).toHaveURL('https://playwright.dev/docs/intro');
+  });
+
+  lightMods.forEach((value) => {
+    test(`Проверка стилей активного ${value} мода`, async ({ page }) => {
+      await page.evaluate((value) => {
+        document.querySelector('html')?.setAttribute('data-theme', value);
+      }, value);
+      await expect(page).toHaveScreenshot(`pageWith${value}Mode.png`);
+    });
   });
 });
