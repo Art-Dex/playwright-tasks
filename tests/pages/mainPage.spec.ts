@@ -1,4 +1,5 @@
 import { test, expect, Locator, Page } from '@playwright/test';
+import { MainPage } from '../models/MainPage';
 
 interface Elements {
   locator: (page: Page) => Locator;
@@ -83,45 +84,38 @@ const lightMods: string[] = ['light', 'dark'];
 
 test.describe('Тесты главной страницы', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('https://playwright.dev/');
+    // await page.goto('https://playwright.dev/');
   });
   test('Проверка отображения элементов навигации хедера', async ({ page }) => {
-    elements.forEach(({ locator, name }) => {
-      test.step(`Проверка отображения элемента ${name}`, async () => {
-        await expect(locator(page)).toBeVisible();
-      });
-    });
+    const mainPage = new MainPage(page);
+
+    await mainPage.openMainPage();
+    await mainPage.checkElementsVisability();
   });
 
   test('Проверка названия элементов навигации хедера', async ({ page }) => {
-    elements.forEach(({ locator, name, text }) => {
-      if (text) {
-        test.step(`Проверка названия элемента ${name}`, async () => {
-          await expect(locator(page)).toContainText(text);
-        });
-      }
-    });
-    await expect(page.getByRole('link', { name: 'Playwright logo Playwright' })).toContainText(
-      'Playwright',
-    );
+    const mainPage = new MainPage(page);
+
+    await mainPage.openMainPage();
+    await mainPage.checkElementsText();
   });
 
   test('Проверка атрибутов href элементов навигации хедера', async ({ page }) => {
-    elements.forEach(({ locator, name, atribute }) => {
-      if (atribute) {
-        test.step(`Проверка атрибутf href элемента ${name}`, async () => {
-          await expect(locator(page)).toHaveAttribute(atribute?.type, atribute?.value);
-        });
-      }
-    });
+    const mainPage = new MainPage(page);
+
+    await mainPage.openMainPage();
+    await mainPage.checkElementsHref();
   });
 
   test('Проверка переключения лайт мода', async ({ page }) => {
-    await expect(page.locator('html')).toHaveAttribute('data-theme-choice', 'system');
-    await page.getByRole('button', { name: 'Switch between dark and light' }).click();
-    await expect(page.locator('html')).toHaveAttribute('data-theme-choice', 'light');
-    await page.getByRole('button', { name: 'Switch between dark and light' }).click();
-    await expect(page.locator('html')).toHaveAttribute('data-theme-choice', 'dark');
+    const mainPage = new MainPage(page);
+
+    await mainPage.openMainPage();
+    await mainPage.checkDataThemeAtributeValue('system');
+    await mainPage.clickSwitchLightModeIcon();
+    await mainPage.checkDataThemeAtributeValue('light');
+    await mainPage.clickSwitchLightModeIcon();
+    await mainPage.checkDataThemeAtributeValue('dark');
   });
 
   test('Проверка заголовка страницы', async ({ page }) => {
