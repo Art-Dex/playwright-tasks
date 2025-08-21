@@ -130,4 +130,24 @@ export class MainPage {
   async checkDataThemeAtributeValue(valueAtribute: string) {
     await expect(this.html).toHaveAttribute('data-theme-choice', valueAtribute);
   }
+
+  async setLightMode() {
+    await this.page.evaluate(() => {
+      document.querySelector('html')?.setAttribute('data-theme', 'light');
+    });
+  }
+
+  async setDarkMode() {
+    await this.page.evaluate(() => {
+      document.querySelector('html')?.setAttribute('data-theme', 'dark');
+    });
+  }
+
+  async checkLayoutLightMode() {
+    await expect(this.page).toHaveScreenshot(`pageWithLightMode.png`);
+  }
+
+  async checkLayoutDarkMode() {
+    await expect(this.page).toHaveScreenshot(`pageWithDackMode.png`);
+  }
 }
