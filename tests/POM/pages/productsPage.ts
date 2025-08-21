@@ -10,4 +10,37 @@ import { Locator, Page } from '@playwright/test';
 // async goToCart()
 // Если не понятно по названию метода, что он должен выполнять, можно заглянуть в шпарганку
 
-export class ProductsPage {}
+export class ProductsPage {
+  readonly page: Page;
+  readonly productCards: Locator;
+  readonly cartCount: Locator;
+  readonly basketButton: Locator;
+
+  constructor(page: Page) {
+    this.page = page;
+    this.productCards = page.locator('.product-card');
+    this.cartCount = page.locator('#cart-count');
+    this.basketButton = page.locator('.cart-btn');
+  }
+
+  async navigate() {
+    await this.page.goto('https://osstep.github.io/products');
+  }
+
+  async getProductByName(name: string) {
+    return this.page.locator(`.product-card:has-text("${name}")`);
+  }
+
+  async addProductToCart(name: string) {
+    const productCard: Locator = await this.getProductByName(name);
+    await productCard.locator('button.add-to-cart').click();
+  }
+
+  async getCartCount() {
+    return parseInt((await this.cartCount.textContent()) || '0');
+  }
+
+  async goToCart() {
+    await this.basketButton.click();
+  }
+}
