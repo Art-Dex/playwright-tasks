@@ -11,7 +11,13 @@ interface SettingsFixtures {
 // Нажать кнопку Сохранить
 
 export const test = base.extend<SettingsFixtures>({
-  configuredSettings: async ({ page }, use) => {},
+  configuredSettings: async ({ page }, use) => {
+    await page.goto('https://osstep.github.io/fixture_settings');
+    await page.locator('#theme').selectOption('Dark');
+    await page.locator('#push-notifications + .slider').check();
+    await page.locator('.save-button').click();
+    await use(page);
+  },
 });
 
 test('Settings are persisted', async ({ configuredSettings }) => {

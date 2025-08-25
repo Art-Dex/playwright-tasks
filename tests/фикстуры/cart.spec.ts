@@ -9,7 +9,11 @@ interface CartFixtures {
 // Заполнить поле пароль admin123
 // Авторизоваться
 export const test = base.extend<CartFixtures>({
-  preloadedCart: async ({ page }, use) => {},
+  preloadedCart: async ({ page }, use) => {
+    await page.goto('https://osstep.github.io/fixture_cart');
+    await page.locator('#add-sample').click();
+    await use(page);
+  },
 });
 
 test('Cart contains sample items', async ({ preloadedCart }) => {
